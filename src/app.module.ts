@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import {TypeOrmModule} from "@nestjs/typeorm"
-import {ConfigModule} from "@nestjs/config"
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
+import { UserModule } from './user/user.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -15,12 +15,14 @@ import {ConfigModule} from "@nestjs/config"
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      // autoLoadEntities: true,
-      // synchronize: true, 
+      entities: [__dirname + '/**/*.entity{.ts,.js}'], // Automatically load entities
+      autoLoadEntities: true,
+      synchronize: true,
     }),
-
+    UserModule,
+    JwtModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
