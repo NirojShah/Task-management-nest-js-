@@ -38,7 +38,7 @@ export class TaskService implements TaskInterface {
   deleteTask(): Promise<ResponseDto<any>> {
     throw new Error('Method not implemented.');
   }
-  getTasks(): Promise<ResponseDto<Tasks[]>> {
+  getTasks(page: number, limit: number): Promise<ResponseDto<Tasks[]>> {
     throw new Error('Method not implemented.');
   }
   getTaskById(taskId: number): Promise<ResponseDto<Tasks>> {
