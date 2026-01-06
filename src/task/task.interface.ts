@@ -6,7 +6,7 @@ export interface TaskInterface{
     createTasks(createTaskDto: CreateTaskDto):Promise<ResponseDto<Tasks>>;
     updateTasks(): Promise<ResponseDto<any>>
     deleteTask(): Promise<ResponseDto<any>>
-    getTasks(): Promise<ResponseDto<Tasks[]>>
+    getTasks(page: number, limit: number): Promise<ResponseDto<Tasks[]>>
     getTaskById(taskId: number): Promise<ResponseDto<Tasks>>
     updateTaskStatusById(taskId: number,status: string): Promise<ResponseDto<any>>
 }
