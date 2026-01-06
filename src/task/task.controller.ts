@@ -3,6 +3,7 @@ import { TaskService } from './task.service';
 import { CreateTaskDto } from './task dto/task.dto';
 import { ResponseDto } from 'src/user/user dto/user.response.dto';
 import { Tasks } from './task.entity';
+import { TaskStatus } from './enums/taskStatus.enum';
 
 @Controller('tasks')
 export class TaskController {
@@ -16,13 +17,18 @@ export class TaskController {
   }
 
   @Get("/all")
-  async getMyTask(@Param() data: any){
-
+  async getMyTask(@Param() page: number, limit: number){
+    return this.taskService.getTasks(page,limit)
   }
 
-  @Get("/id")
-  async getTaskById(){
+  @Get("/:id")
+  async getTaskById(@Param() id: number){
+    return this.taskService.getTaskById(id);
+  }
 
+  @Post("/update-status")
+  async updateTaskStatusById(@Body() status: TaskStatus, taskId: number){
+    return this.taskService.updateTaskStatusById(taskId,status);
   }
 
 }
