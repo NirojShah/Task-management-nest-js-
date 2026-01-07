@@ -39,7 +39,22 @@ export class TaskService implements TaskInterface {
     throw new Error('Method not implemented.');
   }
   async getTasks(page: number, limit: number, userId: number): Promise<ResponseDto<Tasks[]>> {
-    
+    const tasks = await this.taskRepository.find({
+      where:{
+        userId: userId
+      }
+    })
+    if(tasks){
+      return {
+        success: true,
+        message: "tasks found",
+        data: tasks
+      }
+    }
+    return {
+      success: false,
+      message: "Tasks not found"
+    }
   }
   async getTaskById(taskId: number): Promise<ResponseDto<Tasks>> {
     const task = await this.taskRepository.findOne({
