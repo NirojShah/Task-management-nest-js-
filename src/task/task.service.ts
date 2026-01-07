@@ -38,11 +38,26 @@ export class TaskService implements TaskInterface {
   deleteTask(): Promise<ResponseDto<any>> {
     throw new Error('Method not implemented.');
   }
-  getTasks(page: number, limit: number): Promise<ResponseDto<Tasks[]>> {
-    throw new Error('Method not implemented.');
+  async getTasks(page: number, limit: number, userId: number): Promise<ResponseDto<Tasks[]>> {
+    
   }
-  getTaskById(taskId: number): Promise<ResponseDto<Tasks>> {
-    throw new Error('Method not implemented.');
+  async getTaskById(taskId: number): Promise<ResponseDto<Tasks>> {
+    const task = await this.taskRepository.findOne({
+      where:{
+        taskId: taskId
+      }
+    })
+    if(task){
+      return {
+        message:"task found",
+        success: true,
+        data: task
+      }
+    }
+    return {
+      message:"task not found",
+      success: false
+    }
   }
   async updateTaskStatusById(
     taskId: number,
