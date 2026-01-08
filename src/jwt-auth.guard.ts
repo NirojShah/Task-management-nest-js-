@@ -15,7 +15,6 @@ export class JwtAuthGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = request.headers['authorization'];
-    console.log(token);
     if (!token) {
       throw new UnauthorizedException('Authorization token is missing.');
     }
