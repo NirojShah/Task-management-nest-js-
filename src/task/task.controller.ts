@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  Request,
+} from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './task dto/task.dto';
 import { ResponseDto } from 'src/user/user dto/user.response.dto';
@@ -17,7 +27,13 @@ export class TaskController {
   }
 
   @Get('/all')
-  async getMyTask(@Param() page: number, limit: number, userId: number) {
+  async getMyTask(
+    @Request() req,
+    @Query('userId') userId: number,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ) {
+    console.log({ userId:req.user });
     return this.taskService.getTasks(page, limit, userId);
   }
 
@@ -26,8 +42,17 @@ export class TaskController {
     return this.taskService.getTaskById(id);
   }
 
-  @Post('/update-status')
-  async updateTaskStatusById(@Body() status: TaskStatus, taskId: number) {
-    return this.taskService.updateTaskStatusById(taskId, status);
+  @Put('/update-status')
+  async updateTaskStatusById(
+    @Body() status: TaskStatus,
+    taskId: number,
+    userId: number,
+  ) {
+    return this.taskService.updateTaskStatusById(taskId, status, userId);
+  }
+
+  @Delete('/:taskId')
+  async deleteTask(@Param() taskId: number) {
+    return this.taskService.deleteTask(taskId, 2);
   }
 }
