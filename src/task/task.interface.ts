@@ -5,7 +5,7 @@ import { CreateTaskDto } from './task dto/task.dto';
 export interface TaskInterface {
   createTasks(createTaskDto: CreateTaskDto): Promise<ResponseDto<Tasks>>;
   updateTasks(): Promise<ResponseDto<any>>;
-  deleteTask(): Promise<ResponseDto<any>>;
+  deleteTask(taskId: number,userId: number): Promise<ResponseDto<any>>;
   getTasks(
     page: number,
     limit: number,
@@ -15,5 +15,6 @@ export interface TaskInterface {
   updateTaskStatusById(
     taskId: number,
     status: string,
+    userId: number
   ): Promise<ResponseDto<any>>;
 }
