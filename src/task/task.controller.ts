@@ -16,19 +16,18 @@ export class TaskController {
     return this.taskService.createTasks(taskDto);
   }
 
-  @Get("/all")
-  async getMyTask(@Param() page: number, limit: number){
-    return this.taskService.getTasks(page,limit)
+  @Get('/all')
+  async getMyTask(@Param() page: number, limit: number, userId: number) {
+    return this.taskService.getTasks(page, limit, userId);
   }
 
-  @Get("/:id")
-  async getTaskById(@Param() id: number){
+  @Get('/:id')
+  async getTaskById(@Param() id: number) {
     return this.taskService.getTaskById(id);
   }
 
-  @Post("/update-status")
-  async updateTaskStatusById(@Body() status: TaskStatus, taskId: number){
-    return this.taskService.updateTaskStatusById(taskId,status);
+  @Post('/update-status')
+  async updateTaskStatusById(@Body() status: TaskStatus, taskId: number) {
+    return this.taskService.updateTaskStatusById(taskId, status);
   }
-
 }
