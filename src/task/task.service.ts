@@ -2,7 +2,7 @@ import { ResponseDto } from 'src/response/response.dto';
 import { CreateTaskDto } from './task dto/task.dto';
 import { Tasks } from './task.entity';
 import { TaskInterface } from './task.interface';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TaskStatus } from './enums/taskStatus.enum';
@@ -32,21 +32,28 @@ export class TaskService implements TaskInterface {
       };
     }
   }
+
   updateTasks(): Promise<ResponseDto<any>> {
     throw new Error('Method not implemented.');
   }
+
   deleteTask(): Promise<ResponseDto<any>> {
     throw new Error('Method not implemented.');
   }
+
   async getTasks(
     page: number,
     limit: number,
     userId: number,
   ): Promise<ResponseDto<Tasks[]>> {
+    if (!userId) {
+      throw new BadRequestException('User Id is required');
+    }
     const tasks = await this.taskRepository.find({
       where: {
         userId: userId,
       },
+      skip: 10,
     });
     if (tasks) {
       return {
