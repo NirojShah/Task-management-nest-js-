@@ -38,6 +38,9 @@ export class UserService implements UserInterface {
   }
 
   async login(loginDto: LoginDto): Promise<ResponseDto<any>> {
+    if(loginDto.email == undefined || loginDto.password == undefined){
+      throw new BadRequestException("Please send email and password.")
+    }
     const user = await this.userRepository.findOne({
       where: { email: loginDto.email, password: loginDto.password },
     });
