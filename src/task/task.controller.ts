@@ -8,14 +8,17 @@ import {
   Put,
   Query,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './task dto/task.dto';
 import { ResponseDto } from 'src/user/user dto/user.response.dto';
 import { Tasks } from './task.entity';
 import { TaskStatus } from './enums/taskStatus.enum';
+import { JwtAuthGuard } from 'src/jwt-auth.guard';
 
 @Controller('tasks')
+@UseGuards(JwtAuthGuard)
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
@@ -29,30 +32,31 @@ export class TaskController {
   @Get('/all')
   async getMyTask(
     @Request() req,
-    @Query('userId') userId: number,
     @Query('page') page: number,
     @Query('limit') limit: number,
   ) {
-    console.log({ userId:req.user });
+    const userId: number = req.user.userId;
     return this.taskService.getTasks(page, limit, userId);
   }
 
-  @Get('/:id')
-  async getTaskById(@Param() id: number) {
-    return this.taskService.getTaskById(id);
+  @Get('/:taskId')
+  async getTaskById(@Param() taskId: number) {
+    return this.taskService.getTaskById(taskId);
   }
 
   @Put('/update-status')
   async updateTaskStatusById(
+    @Request() req,
     @Body() status: TaskStatus,
     taskId: number,
-    userId: number,
   ) {
+    const userId: number = req.user.userId;
     return this.taskService.updateTaskStatusById(taskId, status, userId);
   }
 
   @Delete('/:taskId')
-  async deleteTask(@Param() taskId: number) {
-    return this.taskService.deleteTask(taskId, 2);
+  async deleteTask(@Request() req, @Param() taskId: number) {
+    const userId: number = req.user.userId;
+    return this.taskService.deleteTask(taskId, userId);
   }
 }

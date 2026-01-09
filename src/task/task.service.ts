@@ -2,7 +2,11 @@ import { ResponseDto } from 'src/response/response.dto';
 import { CreateTaskDto } from './task dto/task.dto';
 import { Tasks } from './task.entity';
 import { TaskInterface } from './task.interface';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TaskStatus } from './enums/taskStatus.enum';
@@ -34,61 +38,62 @@ export class TaskService implements TaskInterface {
   }
 
   updateTasks(): Promise<ResponseDto<any>> {
-    throw new Error("implementation pending.")
+    throw new Error('implementation pending.');
   }
 
   async deleteTask(taskId: number, userId: number): Promise<ResponseDto<any>> {
     const task = await this.taskRepository.findOne({
-      where:{
+      where: {
         userId: userId,
-        taskId: taskId
-      }
-    })
-    if(!task){
-      throw new NotFoundException(`Task ${taskId} not found for the user ${userId}`)
+        taskId: taskId,
+      },
+    });
+    if (!task) {
+      throw new NotFoundException(
+        `Task ${taskId} not found for the user ${userId}`,
+      );
     }
     await this.taskRepository.delete({
-        userId: userId,
-        taskId: taskId
-    })
+      userId: userId,
+      taskId: taskId,
+    });
     return {
       success: true,
-      message: "task deleted successfully"
-    }
-    
-  }
-async getTasks(
-  page: number = 1,
-  limit: number = 10,
-  userId: number,
-): Promise<ResponseDto<Tasks[]>> {
-  if (!userId) {
-    throw new BadRequestException('User Id is required');
-  }
-
-  const skip = (page - 1) * limit;
-
-  const tasks = await this.taskRepository.find({
-    where: { userId },
-    skip,
-    take: limit,
-    order: { taskId: 'DESC' }, // optional but recommended
-  });
-
-  if (tasks.length > 0) {
-    return {
-      success: true,
-      message: 'Tasks found',
-      data: tasks,
+      message: 'task deleted successfully',
     };
   }
+  async getTasks(
+    page: number = 1,
+    limit: number = 10,
+    userId: number,
+  ): Promise<ResponseDto<Tasks[]>> {
+    if (!userId) {
+      throw new BadRequestException('User Id is required');
+    }
 
-  return {
-    success: false,
-    message: 'No tasks found',
-    data: [],
-  };
-}
+    const skip = (page - 1) * limit;
+
+    const tasks = await this.taskRepository.find({
+      where: { userId },
+      skip,
+      take: limit,
+      order: { taskId: 'DESC' }, // optional but recommended
+    });
+
+    if (tasks.length > 0) {
+      return {
+        success: true,
+        message: 'Tasks found',
+        data: tasks,
+      };
+    }
+
+    return {
+      success: false,
+      message: 'No tasks found',
+      data: [],
+    };
+  }
 
   async getTaskById(taskId: number): Promise<ResponseDto<Tasks>> {
     const task = await this.taskRepository.findOne({
@@ -108,14 +113,15 @@ async getTasks(
       success: false,
     };
   }
+
   async updateTaskStatusById(
     taskId: number,
     status: TaskStatus,
-    userId: number
+    userId: number,
   ): Promise<ResponseDto<any>> {
     try {
       const task = await this.taskRepository.findOne({
-        where: { taskId,userId },
+        where: { taskId, userId },
       });
 
       if (!task) {
