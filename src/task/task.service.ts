@@ -17,10 +17,11 @@ export class TaskService implements TaskInterface {
     @InjectRepository(Tasks)
     private taskRepository: Repository<Tasks>,
   ) {}
-  async createTasks(createTaskDto: CreateTaskDto): Promise<ResponseDto<Tasks>> {
+  async createTasks(createTaskDto: CreateTaskDto,createdBy: number): Promise<ResponseDto<Tasks>> {
     try {
       const createdTask = this.taskRepository.create({
         ...createTaskDto,
+        createdBy: createdBy,
         status: TaskStatus.PENDING,
       });
       const savedTask = await this.taskRepository.save(createdTask);
