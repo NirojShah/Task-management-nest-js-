@@ -20,7 +20,7 @@ export class UserService implements UserInterface {
     private jwtService: JwtService,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<ResponseDto<User>> {
+  async createUser(createUserDto: CreateUserDto): Promise<ResponseDto<any>> {
     const user = await this.userRepository.findOne({
       where: { email: createUserDto.email },
     });
@@ -45,13 +45,12 @@ export class UserService implements UserInterface {
       password: hashedPassword,
     });
 
-    const userInfo = await this.userRepository.findOne({
-      where: { email: createUserDto.email },
-    });
+    const { password, ...userWithoutPassword } = savedUser;
+
     return {
       success: true,
       message: 'user created successfully',
-      data: savedUser,
+      data: userWithoutPassword,
     };
   }
 
@@ -71,7 +70,6 @@ export class UserService implements UserInterface {
       user.password,
     );
     if (!isValidPassword) {
-      console.log("i am the one")
       throw new UnauthorizedException('Invalid Credentials');
     }
     const payLoad = {
