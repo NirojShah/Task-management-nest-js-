@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { TaskModule } from './task/task.module';
+import { RolesModule } from './role/roles.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { TaskModule } from './task/task.module';
     UserModule,
     JwtModule,
     TaskModule,
+    RolesModule
   ],
   controllers: [],
   providers: [],
