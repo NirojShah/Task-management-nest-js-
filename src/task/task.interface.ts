@@ -3,7 +3,7 @@ import { Tasks } from './task.entity';
 import { CreateTaskDto } from './task dto/task.dto';
 
 export interface TaskInterface {
-  createTasks(createTaskDto: CreateTaskDto): Promise<ResponseDto<Tasks>>;
+  createTasks(createTaskDto: CreateTaskDto,createdBy: number): Promise<ResponseDto<Tasks>>;
   updateTasks(): Promise<ResponseDto<any>>;
   deleteTask(taskId: number,userId: number): Promise<ResponseDto<any>>;
   getTasks(
