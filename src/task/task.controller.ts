@@ -25,8 +25,10 @@ export class TaskController {
   @Post()
   async createTask(
     @Body() taskDto: CreateTaskDto,
+    @Request() req
   ): Promise<ResponseDto<Tasks>> {
-    return this.taskService.createTasks(taskDto);
+    const createdBy = req.user.userId;
+    return this.taskService.createTasks(taskDto,createdBy);
   }
 
   @Get('/all')
