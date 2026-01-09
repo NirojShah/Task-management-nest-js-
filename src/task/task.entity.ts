@@ -29,8 +29,11 @@ export class Tasks {
     enum:TaskStatus,
     default: TaskStatus.PENDING
   })
-  status: TaskStatus
+  status: TaskStatus;
 
   @Column()
-  userId: number
+  userId: number;
+
+  @Column()
+  createdBy: number;
 }
