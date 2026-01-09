@@ -5,7 +5,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Unique,
+  OneToMany,
 } from 'typeorm';
+import { RoleAssign } from './role.assign.entity';
 
 @Entity('roles')
 @Unique(['name'])
@@ -14,7 +16,7 @@ export class Roles {
   id: number;
 
   @Column({ length: 50 })
-  name: string; 
+  name: string;
 
   @Column({ length: 255, nullable: true })
   description: string;
@@ -27,4 +29,7 @@ export class Roles {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => RoleAssign, (ra: RoleAssign) => ra.user)
+  roleAssignments: RoleAssign[];
 }

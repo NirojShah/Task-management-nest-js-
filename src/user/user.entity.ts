@@ -1,6 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { RoleAssign } from 'src/role/role.assign.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
-@Entity()
+
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   userId: number;
@@ -22,4 +24,7 @@ export class User {
 
   @Column()
   password: string;
-}
+
+  @OneToMany(() => RoleAssign, (ra: RoleAssign) => ra.user)
+  roleAssignments: RoleAssign[];
+} 
