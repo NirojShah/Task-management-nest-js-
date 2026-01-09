@@ -3,25 +3,30 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Patch,
   Post,
   Put,
 } from '@nestjs/common';
 import { ResponseDto } from 'src/response/response.dto';
 import { AssignRoleDTO, CreateRole } from './role.dto';
+import { RolesService } from './role.service';
 
 @Controller('roles')
-class RoleController {
-  constructor() {}
+export class RoleController {
+  constructor(private readonly rolesService: RolesService) {}
 
   @Post()
   async createRole(@Body() createRole: CreateRole): Promise<ResponseDto<any>> {
-    throw new Error('implement this');
+    if (!createRole.description || !createRole.name) {
+      throw new Error('Please send role Name and Description.');
+    }
+    return this.rolesService.createRole(createRole);
   }
 
   @Put()
   async assignRole(
-    @Body() assignRoleDto: AssignRoleDTO
+    @Body() assignRoleDto: AssignRoleDTO,
   ): Promise<ResponseDto<any>> {
     throw new Error('implement this');
   }
@@ -32,14 +37,12 @@ class RoleController {
   }
 
   @Get()
-  async getRoles(
-    
-  ): Promise<ResponseDto<any>> {
-    throw new Error('implement this');
+  async getRoles(): Promise<ResponseDto<any>> {
+    return this.rolesService.getRoles();
   }
 
-  @Delete('/:roleId')
-  async deleteRole(): Promise<ResponseDto<any>> {
-    throw new Error('implement this');
+  @Delete(':roleId')
+  async deleteRole(@Param('roleId') roleId: number): Promise<ResponseDto<any>> {
+    return this.rolesService.deleteRole(+roleId);
   }
 }
