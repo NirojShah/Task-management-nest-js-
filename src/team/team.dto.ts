@@ -1,0 +1,39 @@
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
+
+export class CreateTeamDto {
+  @IsString()
+  @IsNotEmpty()
+  @Length(2, 100)
+  name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @Length(5, 255)
+  description: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean;
+}
+
+export class UpdateTeamDto {
+  @IsString()
+  @IsOptional()
+  @Length(2, 100)
+  name?: string;
+
+  @IsString()
+  @IsOptional()
+  @Length(5, 255)
+  description?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean;
+}
