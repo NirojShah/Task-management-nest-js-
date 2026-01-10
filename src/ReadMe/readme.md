@@ -93,22 +93,23 @@ export class TeamMember {
 
 ## Quick Reference Table - Most Important Decorators
 
-| **Decorator**                  | **Purpose**                                          | **When to use?**                                   | **Common Options**                            |
-| ------------------------------ | ---------------------------------------------------- | -------------------------------------------------- | --------------------------------------------- |
-| `@Entity()`                    | Marks class as a database table                      | Every entity class                                 | `{ name: "custom_table_name" }`               |
-| `@PrimaryGeneratedColumn()`    | Auto-increment ID / UUID primary key                 | Almost every table                                 | `("uuid"), { type: "int" }`                   |
-| `@Column()`                    | Regular column (string, number, boolean, json, etc.) | Most properties                                    | `{ nullable, default, unique, type, length }` |
-| `@CreateDateColumn()`          | Auto current timestamp on insert                     | Audit / creation date                              | —                                             |
-| `@UpdateDateColumn()`          | Auto update timestamp on every change                | Audit / last modified date                         | —                                             |
-| `@DeleteDateColumn()`          | Soft delete - sets timestamp instead of real DELETE  | Soft-delete needed                                 | —                                             |
-| `@ManyToOne()`                 | Many records point to one parent                     | Foreign key owner side (usually has `@JoinColumn`) | `cascade, onDelete: "CASCADE/RESTRICT"`       |
-| `@OneToMany()`                 | One parent has many children                         | Inverse side of `ManyToOne`                        | `cascade`                                     |
-| `@OneToOne()`                  | 1:1 relationship                                     | Profile ↔ User, etc                                | Usually one side has `@JoinColumn`            |
-| `@ManyToMany()`                | N:N relationship (needs junction table)              | Users ↔ Roles, Posts ↔ Tags                        | `cascade, joinTable()` on one side            |
-| `@JoinColumn({ name: "..." })` | Defines foreign key column name & behavior           | On `@ManyToOne` / owning side of `@OneToOne`       | Very important!                               |
-| `@Injectable()`                | Marks class as injectable for Dependency Injection   | Service classes, Providers                         | —                                             |
-| `@InjectRepository()`          | Injects a TypeORM repository for an entity           | In services where a repository is needed           | `{ target: EntityClass }`                     |
-|  |
+| **Decorator**                  | **Purpose**                                          | **When to use?**                                   | **Common Options**                             |
+| ------------------------------ | ---------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------- |
+| `@Entity()`                    | Marks class as a database table                      | Every entity class                                 | `{ name: "custom_table_name" }`                |
+| `@PrimaryGeneratedColumn()`    | Auto-increment ID / UUID primary key                 | Almost every table                                 | `("uuid"), { type: "int" }`                    |
+| `@Column()`                    | Regular column (string, number, boolean, json, etc.) | Most properties                                    | `{ nullable, default, unique, type, length }`  |
+| `@CreateDateColumn()`          | Auto current timestamp on insert                     | Audit / creation date                              | —                                              |
+| `@UpdateDateColumn()`          | Auto update timestamp on every change                | Audit / last modified date                         | —                                              |
+| `@DeleteDateColumn()`          | Soft delete - sets timestamp instead of real DELETE  | Soft-delete needed                                 | —                                              |
+| `@ManyToOne()`                 | Many records point to one parent                     | Foreign key owner side (usually has `@JoinColumn`) | `cascade, onDelete: "CASCADE/RESTRICT"`        |
+| `@OneToMany()`                 | One parent has many children                         | Inverse side of `ManyToOne`                        | `cascade`                                      |
+| `@OneToOne()`                  | 1:1 relationship                                     | Profile ↔ User, etc                                | Usually one side has `@JoinColumn`             |
+| `@ManyToMany()`                | N:N relationship (needs junction table)              | Users ↔ Roles, Posts ↔ Tags                        | `cascade, joinTable()` on one side             |
+| `@JoinColumn({ name: "..." })` | Defines foreign key column name & behavior           | On `@ManyToOne` / owning side of `@OneToOne`       | Very important!                                |
+| `@Injectable()`                | Marks class as injectable for Dependency Injection   | Service classes, Providers                         | —                                              |
+| `@InjectRepository()`          | Injects a TypeORM repository for an entity           | In services where a repository is needed           | `{ target: EntityClass }`                      |
+|                                |
+| `@Module()`                    | Defines a NestJS module                              | Grouping related providers, controllers, etc.      | `{ imports, providers, controllers, exports }` |
 
 ## Best Practices & Recommendations (2025–2026)
 
@@ -161,3 +162,21 @@ export class Profile {
   user: User;
 }
 ```
+
+### \* Since a task is typically assigned to one user, but a user can have multiple tasks, you might want to use a many-to-one relationship instead. \*
+
+```typescript
+
+// In the Tasks entity:
+@ManyToOne(() => User, (user: User) => user.tasks)
+@JoinColumn({ name: 'userId' })
+user: User;
+
+// In the User entity:
+@OneToMany(() => Tasks, (task: Tasks) => task.user)
+tasks: Tasks[];
+```
+
+## ER Diagram link
+
+https://excalidraw.com/#json=GUnwIec3wAlF-IegfNVS2,eeuyfMkFb7YMipqHvpPd5g
