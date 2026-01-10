@@ -30,6 +30,6 @@ export class Roles {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => RoleAssign, (ra: RoleAssign) => ra.user)
+  @OneToMany(() => RoleAssign, (ra: RoleAssign) => ra.role)
   roleAssignments: RoleAssign[];
 }

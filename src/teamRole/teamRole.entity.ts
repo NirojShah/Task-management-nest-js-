@@ -32,7 +32,7 @@ export class TeamRoles {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => TeamRoleAssign, (ra: TeamRoleAssign) => ra.user)
+  @OneToMany(() => TeamRoleAssign, (ra: TeamRoleAssign) => ra.role)
   roleAssignments: TeamRoleAssign[];
 
   @ManyToMany(() => Team, (t: Team) => t.id)
