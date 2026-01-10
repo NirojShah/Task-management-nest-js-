@@ -5,12 +5,18 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Roles } from './role.entity';
 import { Repository } from 'typeorm';
+import { User } from 'src/user/user.entity';
+import { RoleAssign } from './role.assign.entity';
 
 @Injectable()
 export class RolesService implements RolesInterface {
   constructor(
     @InjectRepository(Roles)
     private rolesRepository: Repository<Roles>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+    @InjectRepository(RoleAssign)
+    private roleAssignRepository: Repository<RoleAssign>,
   ) {}
   async createRole(createRolesDto: CreateRole): Promise<ResponseDto<any>> {
     const roleExists = await this.rolesRepository.findOne({
@@ -32,7 +38,7 @@ export class RolesService implements RolesInterface {
     };
   }
   async updateRole(updateRole: any): Promise<ResponseDto<any>> {
-    throw new Error('Method not implemented.');
+    throw new Error("implement this")
   }
   async getRoles(): Promise<ResponseDto<any>> {
     const roles = await this.rolesRepository.find();
@@ -59,6 +65,34 @@ export class RolesService implements RolesInterface {
     }
   }
   async assignRole(userId: number, roleId: number): Promise<ResponseDto<any>> {
-    throw new Error('Method not implemented.');
+    const userExists = await this.userRepository.findOne({
+      where:{
+        userId: userId
+      }
+    })
+    if(!userExists){
+      throw new NotFoundException("User not found")
+    }
+
+    const roleExists = await this.rolesRepository.findOne({
+      where:{
+        id: roleId
+      }
+    })
+
+    if(!roleExists){
+      throw new NotFoundException("Role not found.")
+    }
+
+    const newRoleAssign = this.roleAssignRepository.create({
+      role: {id: roleId},
+      user: {userId: userId}
+    })
+
+    return {
+      success: true,
+      message: "role assigned successfully.",
+      data: newRoleAssign
+    }
   }
 }
