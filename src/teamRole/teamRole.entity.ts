@@ -6,12 +6,14 @@ import {
   UpdateDateColumn,
   Unique,
   OneToMany,
+  ManyToMany,
 } from 'typeorm';
-import { RoleAssign } from './role.assign.entity';
+import { TeamRoleAssign } from './teamRole.assign.entity';
+import { Team } from 'src/team/team.entity';
 
-@Entity('roles')
+@Entity('team_roles')
 @Unique(['name'])
-export class Roles {
+export class TeamRoles {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -30,6 +32,9 @@ export class Roles {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => RoleAssign, (ra: RoleAssign) => ra.role)
-  roleAssignments: RoleAssign[];
+  @OneToMany(() => TeamRoleAssign, (ra: TeamRoleAssign) => ra.role)
+  roleAssignments: TeamRoleAssign[];
+
+  @ManyToMany(() => Team, (t: Team) => t.id)
+  teamId: number;
 }

@@ -17,11 +17,14 @@ export class TaskService implements TaskInterface {
     @InjectRepository(Tasks)
     private taskRepository: Repository<Tasks>,
   ) {}
-  async createTasks(createTaskDto: CreateTaskDto,createdBy: number): Promise<ResponseDto<Tasks>> {
+  async createTasks(
+    createTaskDto: CreateTaskDto,
+    createdBy: number,
+  ): Promise<ResponseDto<Tasks>> {
     try {
       const createdTask = this.taskRepository.create({
         ...createTaskDto,
-        createdBy: createdBy,
+        createdBy: { userId: createdBy },
         status: TaskStatus.PENDING,
       });
       const savedTask = await this.taskRepository.save(createdTask);
@@ -45,7 +48,7 @@ export class TaskService implements TaskInterface {
   async deleteTask(taskId: number, userId: number): Promise<ResponseDto<any>> {
     const task = await this.taskRepository.findOne({
       where: {
-        userId: userId,
+        user: { userId: userId },
         taskId: taskId,
       },
     });
@@ -55,7 +58,7 @@ export class TaskService implements TaskInterface {
       );
     }
     await this.taskRepository.delete({
-      userId: userId,
+      user: { userId: userId },
       taskId: taskId,
     });
     return {
@@ -75,7 +78,7 @@ export class TaskService implements TaskInterface {
     const skip = (page - 1) * limit;
 
     const tasks = await this.taskRepository.find({
-      where: { userId },
+      where: { user: { userId: userId } },
       skip,
       take: limit,
       order: { taskId: 'DESC' }, // optional but recommended
@@ -122,7 +125,7 @@ export class TaskService implements TaskInterface {
   ): Promise<ResponseDto<any>> {
     try {
       const task = await this.taskRepository.findOne({
-        where: { taskId, userId },
+        where: { taskId, user: { userId: userId } },
       });
 
       if (!task) {
