@@ -1,6 +1,7 @@
 import { RoleAssign } from 'src/role/role.assign.entity';
+import { Tasks } from 'src/task/task.entity';
+import { TeamMember } from 'src/team/teamMember.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-
 
 @Entity('users')
 export class User {
@@ -27,4 +28,19 @@ export class User {
 
   @OneToMany(() => RoleAssign, (ra: RoleAssign) => ra.user)
   roleAssignments: RoleAssign[];
-} 
+
+  @OneToMany(() => TeamMember, (teamMember: TeamMember) => teamMember.user)
+  teamMembers: TeamMember[];
+
+  // Tasks assigned to the user
+  @OneToMany(() => Tasks, (task: Tasks) => task.user)
+  assignedTask: Tasks[];
+
+  // Tasks created by the user
+  @OneToMany(() => Tasks, (task) => task.createdBy)
+  createdTasks: Tasks[];
+
+  // Tasks asigned by the user
+  @OneToMany(() => Tasks, (task) => task.createdBy)
+  assignedBy: Tasks[];
+}

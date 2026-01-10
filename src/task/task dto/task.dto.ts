@@ -14,8 +14,8 @@ export class CreateTaskDto {
   @IsNotEmpty({ message: 'Task description is required' })
   taskDescription: string;
 
-  @IsNumber({}, { message: 'AssignedBy must be a number' })
-  assignedBy: number;
+  // @IsNumber({}, { message: 'AssignedBy must be a number' })
+  // assignedBy: number;
 
   @IsDateString({}, { message: 'Start date must be a valid date' })
   startDate: string;
@@ -30,7 +30,6 @@ export class CreateTaskDto {
   @IsEnum(TaskStatus, { message: 'Invalid task status' })
   status?: TaskStatus;
 }
-
 
 export class UpdateTaskStatusDto {
   @IsEnum(TaskStatus)
