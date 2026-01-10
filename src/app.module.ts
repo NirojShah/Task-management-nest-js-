@@ -5,6 +5,8 @@ import { UserModule } from './user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { TaskModule } from './task/task.module';
 import { RolesModule } from './role/roles.module';
+import { TeamModule } from './team/team.module';
+import { TeamRole } from './teamRole/tearRole.module';
 
 @Module({
   imports: [
@@ -24,7 +26,9 @@ import { RolesModule } from './role/roles.module';
     UserModule,
     JwtModule,
     TaskModule,
-    RolesModule
+    RolesModule,
+    TeamRole,
+    TeamModule,
   ],
   controllers: [],
   providers: [],
