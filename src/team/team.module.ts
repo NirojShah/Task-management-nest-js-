@@ -2,10 +2,19 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Team } from './team.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { User } from 'src/user/user.entity';
+
+import { TeamRoleAssign } from 'src/teamRole/teamRole.assign.entity';
+import { TeamService } from './team.service';
+import { TeamController } from './team.controller';
+import { TeamRoles } from 'src/teamRole/teamRole.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Team]), JwtModule],
-  controllers: [],
-  providers: [],
+  imports: [
+    TypeOrmModule.forFeature([Team, User, TeamRoles, TeamRoleAssign]),
+    JwtModule
+  ],
+  controllers: [TeamController],
+  providers: [TeamService],
 })
 export class TeamModule {}
