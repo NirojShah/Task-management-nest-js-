@@ -88,4 +88,13 @@ export class UserService implements UserInterface {
       },
     };
   }
+
+  async allUsers(): Promise<ResponseDto<any>> {
+    const users = await this.userRepository.find();
+    return {
+      success: true,
+      message: 'users fetched successfullly',
+      data: users,
+    };
+  }
 }
