@@ -24,11 +24,14 @@ export class RoleController {
     return this.rolesService.createRole(createRole);
   }
 
-  @Put()
+  @Post("/assign")
   async assignRole(
     @Body() assignRoleDto: AssignRoleDTO,
   ): Promise<ResponseDto<any>> {
-    throw new Error('implement this');
+    return this.rolesService.assignRole(
+      assignRoleDto.userId,
+      assignRoleDto.roleId,
+    );
   }
 
   @Patch()
