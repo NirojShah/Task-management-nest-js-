@@ -8,11 +8,18 @@ import { TeamRoleAssign } from 'src/teamRole/teamRole.assign.entity';
 import { TeamService } from './team.service';
 import { TeamController } from './team.controller';
 import { TeamRoles } from 'src/teamRole/teamRole.entity';
+import { TeamMember } from './teamMember.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Team, User, TeamRoles, TeamRoleAssign]),
-    JwtModule
+    TypeOrmModule.forFeature([
+      Team,
+      User,
+      TeamRoles,
+      TeamRoleAssign,
+      TeamMember,
+    ]),
+    JwtModule,
   ],
   controllers: [TeamController],
   providers: [TeamService],
