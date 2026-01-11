@@ -1,6 +1,7 @@
-import { Controller, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { ResponseDto } from 'src/response/response.dto';
+import { AddTeamMemberDto } from './team.dto';
 
 @Controller('team')
 export class TeamController {
@@ -19,8 +20,8 @@ export class TeamController {
     throw new Error('Implement this');
   }
   @Post('/add-memeber')
-  addUser(): Promise<ResponseDto<any>> {
-    throw new Error('Implement this');
+  addUser(@Body() addUserDto: AddTeamMemberDto): Promise<ResponseDto<any>> {
+    return this.addUser(addUserDto);
   }
   @Patch('/remove-member')
   removeUser(): Promise<ResponseDto<any>> {
