@@ -6,7 +6,8 @@ import { User } from 'src/user/user.entity';
 import { TeamRoles } from 'src/teamRole/teamRole.entity';
 import { TeamInterface } from './team.interface';
 import { ResponseDto } from 'src/response/response.dto';
-import { CreateTeamDto } from './team.dto';
+import { AddTeamMemberDto, CreateTeamDto } from './team.dto';
+import { TeamMember } from './teamMember.entity';
 
 @Injectable()
 export class TeamService implements TeamInterface {
@@ -19,6 +20,9 @@ export class TeamService implements TeamInterface {
 
     @InjectRepository(TeamRoles)
     private teamRoleRepository: Repository<TeamRoles>,
+
+    @InjectRepository(TeamMember)
+    private teamMemberRepository: Repository<TeamMember>,
   ) {}
 
   async createTeam(createTeamDto: CreateTeamDto): Promise<ResponseDto<any>> {
@@ -45,8 +49,53 @@ export class TeamService implements TeamInterface {
     };
   }
 
-  async addMember(): Promise<ResponseDto<any>> {
-    throw new Error('implement this');
+  async addMember(addMemberDto: AddTeamMemberDto): Promise<ResponseDto<any>> {
+    const team = await this.teamRepository.findOne({
+      where: { id: addMemberDto.teamId },
+    });
+    if (!team) {
+      return {
+        success: false,
+        message: 'Team not found',
+      };
+    }
+
+    // 2. Check user exists
+    const user = await this.userRepository.findOne({
+      where: { userId: addMemberDto.userId },
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        message: 'User not found',
+      };
+    }
+
+    const existingMember = await this.teamMemberRepository.findOne({
+      where: {
+        team: { id: addMemberDto.teamId },
+        user: { userId: addMemberDto.userId },
+      },
+      relations: ['team', 'user'],
+    });
+
+    if (existingMember) {
+      return {
+        success: false,
+        message: 'User already added to this team',
+      };
+    }
+
+    const teamMember = this.teamMemberRepository.create({
+      team,
+      user,
+    });
+    await this.teamMemberRepository.save(teamMember);
+    return {
+      success: true,
+      message: 'user added to the team successfully.',
+    };
   }
   async assignRole(): Promise<ResponseDto<any>> {
     throw new Error('implement this');
