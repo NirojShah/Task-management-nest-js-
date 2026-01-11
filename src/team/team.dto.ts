@@ -1,6 +1,7 @@
 import {
   IsBoolean,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   Length,
@@ -36,4 +37,14 @@ export class UpdateTeamDto {
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
+}
+
+
+
+export class AddTeamMemberDto {
+  @IsNumber()
+  teamId: number;
+
+  @IsNumber()
+  userId: number;
 }
