@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import {TypeOrmModule} from "@nestjs/typeorm"
-import {ConfigModule} from "@nestjs/config"
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
+import { UserModule } from './user/user.module';
+import { JwtModule } from '@nestjs/jwt';
+import { TaskModule } from './task/task.module';
+import { RolesModule } from './role/roles.module';
+import { TeamModule } from './team/team.module';
+import { TeamRole } from './teamRole/tearRole.module';
 
 @Module({
   imports: [
@@ -15,12 +19,18 @@ import {ConfigModule} from "@nestjs/config"
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      // autoLoadEntities: true,
-      // synchronize: true, 
+      entities: [__dirname + '/**/*.entity{.ts,.js}'], // Automatically load entities
+      autoLoadEntities: true,
+      synchronize: true,
     }),
-
+    UserModule,
+    JwtModule,
+    TaskModule,
+    RolesModule,
+    TeamRole,
+    TeamModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

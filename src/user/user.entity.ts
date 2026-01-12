@@ -1,25 +1,46 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { RoleAssign } from 'src/role/role.assign.entity';
+import { Tasks } from 'src/task/task.entity';
+import { TeamMember } from 'src/team/teamMember.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
-@Entity()
-export class User{
-    @PrimaryGeneratedColumn()
-    userId: string;
+@Entity('users')
+export class User {
+  @PrimaryGeneratedColumn()
+  userId: number;
 
-    @Column()
-    firstName: string;
+  @Column()
+  firstName: string;
 
-    @Column()
-    lastName: string;
+  @Column()
+  lastName: string;
 
-    @Column()
-    email: string;
+  @Column()
+  email: string;
 
-    @Column()
-    phoneNo: number;
+  @Column()
+  phoneNo: string;
 
-    @Column()
-    gender: string;
+  @Column()
+  gender: string;
 
-    @Column()
-    password: string
+  @Column()
+  password: string;
+
+  @OneToMany(() => RoleAssign, (ra: RoleAssign) => ra.user)
+  roleAssignments: RoleAssign[];
+
+  @OneToMany(() => TeamMember, (teamMember: TeamMember) => teamMember.user)
+  teamMembers: TeamMember[];
+
+  // Tasks assigned to the user
+  @OneToMany(() => Tasks, (task: Tasks) => task.user)
+  assignedTask: Tasks[];
+
+  // Tasks created by the user
+  @OneToMany(() => Tasks, (task) => task.createdBy)
+  createdTasks: Tasks[];
+
+  // Tasks asigned by the user
+  @OneToMany(() => Tasks, (task) => task.createdBy)
+  assignedBy: Tasks[];
 }
