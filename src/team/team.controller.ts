@@ -9,7 +9,12 @@ import {
 } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { ResponseDto } from 'src/response/response.dto';
-import { AddTeamMemberDto, CreateTeamDto, UpdateTeamDto } from './team.dto';
+import {
+  AddTeamMemberDto,
+  CreateTeamDto,
+  RemoveMemberDto,
+  UpdateTeamDto,
+} from './team.dto';
 
 @Controller('team')
 export class TeamController {
@@ -32,7 +37,7 @@ export class TeamController {
 
   @Patch()
   updateTeam(@Body() updateTeamDto: UpdateTeamDto): Promise<ResponseDto<any>> {
-    return this.teamService.updateTeam(updateTeamDto)
+    return this.teamService.updateTeam(updateTeamDto);
     throw new Error('Implement this');
   }
   @Post('/add-memeber')
@@ -40,8 +45,10 @@ export class TeamController {
     return this.addUser(addUserDto);
   }
   @Patch('/remove-member')
-  removeUser(): Promise<ResponseDto<any>> {
-    throw new Error('Implement this');
+  removeUser(
+    @Body() removeMemberDto: RemoveMemberDto,
+  ): Promise<ResponseDto<any>> {
+    return this.teamService.removeMember(removeMemberDto);
   }
   @Post('/assign-team-role')
   assignTeamRole(): Promise<ResponseDto<any>> {
