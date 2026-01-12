@@ -1,12 +1,16 @@
 import { ILike, Repository } from 'typeorm';
 import { Team } from './team.entity';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { TeamRoles } from 'src/teamRole/teamRole.entity';
 import { TeamInterface } from './team.interface';
 import { ResponseDto } from 'src/response/response.dto';
-import { AddTeamMemberDto, CreateTeamDto } from './team.dto';
+import { AddTeamMemberDto, CreateTeamDto, UpdateTeamDto } from './team.dto';
 import { TeamMember } from './teamMember.entity';
 
 @Injectable()
@@ -136,7 +140,24 @@ export class TeamService implements TeamInterface {
     throw new Error('implement this');
   }
 
-  async updateTeam(): Promise<ResponseDto<any>> {
-    throw new Error('implement this');
+  async updateTeam(updateTeamDto: UpdateTeamDto): Promise<ResponseDto<any>> {
+    const team = await this.teamRepository.findOne({
+      where: {
+        id: updateTeamDto.teamId,
+      },
+    });
+    if (!team) {
+      throw new NotFoundException('Team not found with given Id.');
+    }
+    team.name = updateTeamDto.name || team.name;
+    team.description = updateTeamDto.description || team.description;
+    team.isActive = updateTeamDto.isActive || team.isActive;
+
+    await this.teamRepository.save(team);
+    return {
+      success: true,
+      message: 'team updated successfully',
+      data: team,
+    };
   }
 }
