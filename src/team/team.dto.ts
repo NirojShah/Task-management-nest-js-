@@ -24,6 +24,11 @@ export class CreateTeamDto {
 }
 
 export class UpdateTeamDto {
+
+  @IsNumber()
+  @IsNotEmpty()
+  teamId: number
+
   @IsString()
   @IsOptional()
   @Length(2, 100)
