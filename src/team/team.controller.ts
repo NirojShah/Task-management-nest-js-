@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { ResponseDto } from 'src/response/response.dto';
-import { AddTeamMemberDto, CreateTeamDto } from './team.dto';
+import { AddTeamMemberDto, CreateTeamDto, UpdateTeamDto } from './team.dto';
 
 @Controller('team')
 export class TeamController {
@@ -31,7 +31,8 @@ export class TeamController {
   }
 
   @Patch()
-  updateTeam(): Promise<ResponseDto<any>> {
+  updateTeam(@Body() updateTeamDto: UpdateTeamDto): Promise<ResponseDto<any>> {
+    return this.teamService.updateTeam(updateTeamDto)
     throw new Error('Implement this');
   }
   @Post('/add-memeber')
