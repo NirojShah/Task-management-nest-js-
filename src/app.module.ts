@@ -27,6 +27,7 @@ import { TeamRole } from './teamRole/tearRole.module';
     JwtModule,
     TaskModule,
     RolesModule,
+    TeamModule,
     TeamRole,
     TeamModule,
   ],
