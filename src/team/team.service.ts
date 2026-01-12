@@ -1,6 +1,6 @@
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Team } from './team.entity';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { TeamRoles } from 'src/teamRole/teamRole.entity';
@@ -46,6 +46,36 @@ export class TeamService implements TeamInterface {
       success: true,
       message: 'Team created successfully',
       data: team,
+    };
+  }
+
+  async searchTeam(name?: string): Promise<ResponseDto<any>> {
+    let teams: Team[];
+
+    if (!name || name.trim() === '') {
+      // Fetch all teams
+      teams = await this.teamRepository.find();
+    } else {
+      // Partial match (case-insensitive)
+      teams = await this.teamRepository.find({
+        where: {
+          name: ILike(`%${name}%`),
+        },
+      });
+    }
+
+    if (!teams || teams.length === 0) {
+      return {
+        success: false,
+        message: 'No Teams available',
+        data: [],
+      };
+    }
+
+    return {
+      success: true,
+      message: 'Teams fetched successfully',
+      data: teams,
     };
   }
 
@@ -97,12 +127,15 @@ export class TeamService implements TeamInterface {
       message: 'user added to the team successfully.',
     };
   }
+
   async assignRole(): Promise<ResponseDto<any>> {
     throw new Error('implement this');
   }
+
   async removeMember(): Promise<ResponseDto<any>> {
     throw new Error('implement this');
   }
+
   async updateTeam(): Promise<ResponseDto<any>> {
     throw new Error('implement this');
   }
