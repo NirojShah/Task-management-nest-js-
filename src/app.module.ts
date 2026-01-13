@@ -29,7 +29,6 @@ import { TeamRole } from './teamRole/tearRole.module';
     RolesModule,
     TeamModule,
     TeamRole,
-    TeamModule,
   ],
   controllers: [],
   providers: [],
