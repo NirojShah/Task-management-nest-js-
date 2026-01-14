@@ -30,26 +30,23 @@ export class TeamController {
     return this.teamService.searchTeam(name);
   }
 
-  @Get()
-  getTeams(): Promise<ResponseDto<any>> {
-    throw new Error('Implement this');
-  }
-
   @Patch()
   updateTeam(@Body() updateTeamDto: UpdateTeamDto): Promise<ResponseDto<any>> {
     return this.teamService.updateTeam(updateTeamDto);
-    throw new Error('Implement this');
   }
+
   @Post('/add-memeber')
   addUser(@Body() addUserDto: AddTeamMemberDto): Promise<ResponseDto<any>> {
     return this.addUser(addUserDto);
   }
+
   @Patch('/remove-member')
   removeUser(
     @Body() removeMemberDto: RemoveMemberDto,
   ): Promise<ResponseDto<any>> {
     return this.teamService.removeMember(removeMemberDto);
   }
+
   @Post('/assign-team-role')
   assignTeamRole(): Promise<ResponseDto<any>> {
     throw new Error('Implement this');
