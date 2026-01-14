@@ -24,7 +24,7 @@ export class RoleController {
     return this.rolesService.createRole(createRole);
   }
 
-  @Post("/assign")
+  @Post('/assign')
   async assignRole(
     @Body() assignRoleDto: AssignRoleDTO,
   ): Promise<ResponseDto<any>> {
