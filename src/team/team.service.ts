@@ -12,6 +12,7 @@ import { TeamInterface } from './team.interface';
 import { ResponseDto } from 'src/response/response.dto';
 import {
   AddTeamMemberDto,
+  AssignRoleDto,
   CreateTeamDto,
   RemoveMemberDto,
   UpdateTeamDto,
@@ -169,8 +170,39 @@ export class TeamService implements TeamInterface {
     };
   }
 
-  async assignRole(): Promise<ResponseDto<any>> {
-    throw new Error('implement this');
+  async assignRole(assignRoleDto: AssignRoleDto): Promise<ResponseDto<any>> {
+    const isTeam = await this.teamRepository.findOne({
+      where:{
+        id: assignRoleDto.teamId
+      }
+    })
+
+    if(!isTeam){
+      throw new NotFoundException("Team not found.")
+    }
+
+    const isTeamMember = await this.teamMemberRepository.findOne({
+      where:{
+        team: {id: assignRoleDto.teamId},
+        user:{userId: assignRoleDto.userId}
+      }
+    })
+
+    if(!isTeamMember){
+      throw new BadRequestException("User is not an member of the team.")
+    }
+
+    const assignedRole = this.teamMemberRepository.create({
+      team: {id:assignRoleDto.teamId},
+      user: {userId: assignRoleDto.userId}
+    })
+
+    await this.teamMemberRepository.save(assignedRole)
+
+    return {
+      success: true,
+      message: "Role assigned successfully"
+    }
   }
 
   async removeMember(
