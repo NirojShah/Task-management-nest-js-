@@ -20,4 +20,5 @@ export interface TeamInterface {
   assignRole(assignRoleDto: AssignRoleDto): Promise<ResponseDto<any>>;
   removeMember(removeMemberDto: RemoveMemberDto): Promise<ResponseDto<any>>;
   updateTeam(updateTeamDto: UpdateTeamDto): Promise<ResponseDto<any>>;
+  teamMemberWithRoles(teamId: number): Promise<ResponseDto<any>>;
 }
