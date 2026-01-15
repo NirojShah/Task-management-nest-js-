@@ -23,3 +23,13 @@ export class CreateTeamRoleDto {
   @IsOptional()
   isActive?: boolean;
 }
+
+export class AssignTeamRoleDto {
+  @IsInt()
+  @IsNotEmpty()
+  teamRoleId: number;
+
+  @IsInt()
+  @IsNotEmpty()
+  userId: number;
+}
