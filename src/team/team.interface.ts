@@ -1,6 +1,7 @@
 import { ResponseDto } from 'src/response/response.dto';
 import {
   AddTeamMemberDto,
+  AssignRoleDto,
   CreateTeamDto,
   RemoveMemberDto,
   UpdateTeamDto,
@@ -16,7 +17,7 @@ export interface TeamInterface {
     task: boolean,
   ): Promise<ResponseDto<any>>;
   addMember(addMemberDto: AddTeamMemberDto): Promise<ResponseDto<any>>;
-  assignRole(): Promise<ResponseDto<any>>;
+  assignRole(assignRoleDto: AssignRoleDto): Promise<ResponseDto<any>>;
   removeMember(removeMemberDto: RemoveMemberDto): Promise<ResponseDto<any>>;
   updateTeam(updateTeamDto: UpdateTeamDto): Promise<ResponseDto<any>>;
 }
