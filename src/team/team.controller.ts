@@ -64,4 +64,11 @@ export class TeamController {
   ): Promise<ResponseDto<any>> {
     return this.teamService.assignRole(assignTeamRoleDto);
   }
+
+  @Get('member-with-role/:teamId')
+  getTeamMemberWithRole(
+    @Param('teamId') teamId: number,
+  ): Promise<ResponseDto<any>> {
+    return this.teamService.teamMemberWithRoles(teamId);
+  }
 }
