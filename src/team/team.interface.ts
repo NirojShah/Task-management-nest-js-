@@ -9,6 +9,12 @@ import {
 export interface TeamInterface {
   createTeam(createTeamDto: CreateTeamDto): Promise<ResponseDto<any>>;
   searchTeam(name?: string): Promise<ResponseDto<any>>;
+  getTeamDetails(
+    id: number,
+    role: boolean,
+    members: boolean,
+    task: boolean,
+  ): Promise<ResponseDto<any>>;
   addMember(addMemberDto: AddTeamMemberDto): Promise<ResponseDto<any>>;
   assignRole(): Promise<ResponseDto<any>>;
   removeMember(removeMemberDto: RemoveMemberDto): Promise<ResponseDto<any>>;
