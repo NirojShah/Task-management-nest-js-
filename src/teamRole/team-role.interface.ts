@@ -5,4 +5,6 @@ export interface TeamRoleInterface {
   createTeamRole(
     createTeamRoleDto: CreateTeamRoleDto,
   ): Promise<ResponseDto<any>>;
+
+  getTeamRoles(teamId: number): Promise<ResponseDto<any>>;
 }

@@ -63,4 +63,26 @@ export class TeamRoleService implements TeamRoleInterface {
       data: savedRole,
     };
   }
+
+  async getTeamRoles(teamId: number): Promise<ResponseDto<any>> {
+    const isTeamExist = this.teamRepository.findOne({ where: { id: teamId } });
+
+    if (!isTeamExist) {
+      throw new NotFoundException(`Team not found with id: ${teamId}`);
+    }
+    const teamRoles = await this.teamRoleRepository.find({
+      where: { team: { id: teamId } },
+      // relations: ['team'],
+    });
+
+    if (teamRoles.length === 0) {
+      throw new NotFoundException(`No roles found for team with id: ${teamId}`);
+    }
+
+    return {
+      success: true,
+      message: 'Team roles fetched successfully',
+      data: teamRoles,
+    };
+  }
 }
