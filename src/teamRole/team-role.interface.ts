@@ -1,5 +1,5 @@
-import { ResponseDto } from 'src/response/response.dto';
-import { CreateTeamRoleDto } from './team-role.dto';
+import { ResponseDto } from '../response/response.dto';
+import { AssignTeamRoleDto, CreateTeamRoleDto } from './team-role.dto';
 
 export interface TeamRoleInterface {
   createTeamRole(
@@ -7,4 +7,8 @@ export interface TeamRoleInterface {
   ): Promise<ResponseDto<any>>;
 
   getTeamRoles(teamId: number): Promise<ResponseDto<any>>;
+
+  asignTeamRoleToUser(
+    assignTeamRoleDto: AssignTeamRoleDto,
+  ): Promise<ResponseDto<any>>;
 }
