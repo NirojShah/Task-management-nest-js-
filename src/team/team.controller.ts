@@ -30,6 +30,16 @@ export class TeamController {
     return this.teamService.searchTeam(name);
   }
 
+  @Get('/get-details/:id')
+  getTeamDetails(
+    @Query('role') role: boolean,
+    @Query('members') members: boolean,
+    @Query('task') task: boolean,
+    @Param('id') id: number,
+  ): Promise<ResponseDto<any>> {
+    return this.teamService.getTeamDetails(id, role, members, task);
+  }
+
   @Patch()
   updateTeam(@Body() updateTeamDto: UpdateTeamDto): Promise<ResponseDto<any>> {
     return this.teamService.updateTeam(updateTeamDto);
@@ -37,7 +47,7 @@ export class TeamController {
 
   @Post('/add-memeber')
   addUser(@Body() addUserDto: AddTeamMemberDto): Promise<ResponseDto<any>> {
-    return this.addUser(addUserDto);
+    return this.teamService.addMember(addUserDto);
   }
 
   @Patch('/remove-member')

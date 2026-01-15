@@ -88,6 +88,38 @@ export class TeamService implements TeamInterface {
     };
   }
 
+  async getTeamDetails(
+    id: number,
+    role: boolean,
+    members: boolean,
+    task: boolean,
+  ): Promise<ResponseDto<any>> {
+    let conditions: string[] = [];
+
+    if (members) {
+      conditions.push('teamMembers.user');
+    }
+    if (role) {
+      conditions.push('teamRoles');
+    }
+    if (task) {
+      conditions.push('tasks');
+    }
+    const team = await this.teamRepository.findOne({
+      where: { id },
+      relations: conditions,
+    });
+
+    if (!team) {
+      throw new NotFoundException('Team not found with given Id.');
+    }
+    return {
+      success: true,
+      message: 'Team details fetched successfully',
+      data: team,
+    };
+  }
+
   async addMember(addMemberDto: AddTeamMemberDto): Promise<ResponseDto<any>> {
     const team = await this.teamRepository.findOne({
       where: { id: addMemberDto.teamId },
