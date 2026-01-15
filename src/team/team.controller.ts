@@ -11,6 +11,7 @@ import { TeamService } from './team.service';
 import { ResponseDto } from 'src/response/response.dto';
 import {
   AddTeamMemberDto,
+  AssignRoleDto,
   CreateTeamDto,
   RemoveMemberDto,
   UpdateTeamDto,
@@ -45,7 +46,7 @@ export class TeamController {
     return this.teamService.updateTeam(updateTeamDto);
   }
 
-  @Post('/add-memeber')
+  @Post('/add-member')
   addUser(@Body() addUserDto: AddTeamMemberDto): Promise<ResponseDto<any>> {
     return this.teamService.addMember(addUserDto);
   }
@@ -58,7 +59,9 @@ export class TeamController {
   }
 
   @Post('/assign-team-role')
-  assignTeamRole(): Promise<ResponseDto<any>> {
-    throw new Error('Implement this');
+  assignTeamRole(
+    @Body() assignTeamRoleDto: AssignRoleDto,
+  ): Promise<ResponseDto<any>> {
+    return this.teamService.assignRole(assignTeamRoleDto);
   }
 }
