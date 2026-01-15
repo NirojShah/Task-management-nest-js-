@@ -35,6 +35,24 @@ export class TeamService implements TeamInterface {
     private teamMemberRepository: Repository<TeamMember>,
   ) {}
 
+  async teamMemberWithRoles(teamId: number): Promise<ResponseDto<any>> {
+    const teamExists = await this.teamRepository.findOne({
+      where: {
+        id: teamId,
+      },
+      relations: ['teamMembers.user'],
+    });
+    if (!teamExists) {
+      throw new NotFoundException('Team not found.');
+    }
+
+    return {
+      success: true,
+      message: 'successfully fetched the team member with role',
+      data: teamExists
+    };
+  }
+
   async createTeam(createTeamDto: CreateTeamDto): Promise<ResponseDto<any>> {
     const existingTeam = await this.teamRepository.findOne({
       where: { name: createTeamDto.name },
@@ -172,37 +190,37 @@ export class TeamService implements TeamInterface {
 
   async assignRole(assignRoleDto: AssignRoleDto): Promise<ResponseDto<any>> {
     const isTeam = await this.teamRepository.findOne({
-      where:{
-        id: assignRoleDto.teamId
-      }
-    })
+      where: {
+        id: assignRoleDto.teamId,
+      },
+    });
 
-    if(!isTeam){
-      throw new NotFoundException("Team not found.")
+    if (!isTeam) {
+      throw new NotFoundException('Team not found.');
     }
 
     const isTeamMember = await this.teamMemberRepository.findOne({
-      where:{
-        team: {id: assignRoleDto.teamId},
-        user:{userId: assignRoleDto.userId}
-      }
-    })
+      where: {
+        team: { id: assignRoleDto.teamId },
+        user: { userId: assignRoleDto.userId },
+      },
+    });
 
-    if(!isTeamMember){
-      throw new BadRequestException("User is not an member of the team.")
+    if (!isTeamMember) {
+      throw new BadRequestException('User is not an member of the team.');
     }
 
     const assignedRole = this.teamMemberRepository.create({
-      team: {id:assignRoleDto.teamId},
-      user: {userId: assignRoleDto.userId}
-    })
+      team: { id: assignRoleDto.teamId },
+      user: { userId: assignRoleDto.userId },
+    });
 
-    await this.teamMemberRepository.save(assignedRole)
+    await this.teamMemberRepository.save(assignedRole);
 
     return {
       success: true,
-      message: "Role assigned successfully"
-    }
+      message: 'Role assigned successfully',
+    };
   }
 
   async removeMember(
