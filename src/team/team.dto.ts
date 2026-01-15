@@ -60,3 +60,17 @@ export class RemoveMemberDto {
   @IsNotEmpty()
   userId: number;
 }
+
+export class AssignRoleDto {
+  @IsNumber()
+  @IsNotEmpty()
+  userId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  roleId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  teamId: number
+}
