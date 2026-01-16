@@ -20,6 +20,23 @@ export class UserService implements UserInterface {
     private jwtService: JwtService,
   ) {}
 
+  async singleUserInfo(userId: number): Promise<ResponseDto<any>> {
+    const userInfo = await this.userRepository.findOne({
+      where: {
+        userId: userId,
+      },
+    });
+
+    if (!userInfo) {
+      throw new BadRequestException(`user with id -${userId} not  found.`);
+    }
+    return {
+      success: true,
+      message: 'user found',
+      data: userInfo,
+    };
+  }
+
   async createUser(createUserDto: CreateUserDto): Promise<ResponseDto<any>> {
     const user = await this.userRepository.findOne({
       where: { email: createUserDto.email },
