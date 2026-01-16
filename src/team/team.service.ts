@@ -216,13 +216,6 @@ export class TeamService implements TeamInterface {
       throw new BadRequestException('User is not an member of the team.');
     }
 
-    // const assignedRole = this.teamMemberRepository.create({
-    //   team: { id: teamId },
-    //   user: { userId: userId },
-    // });
-
-    // await this.teamMemberRepository.save(assignedRole);
-
     const isDuplicate = await this.teamRoleAssignRepo.findOne({
       where: { user: { userId: userId }, role: { id: roleId } },
     });
