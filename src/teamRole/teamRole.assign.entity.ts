@@ -15,7 +15,7 @@ export class TeamRoleAssign {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.roleAssignments, {
+  @ManyToOne(() => User, (user) => user.teamRoleAssign, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'user_id' })

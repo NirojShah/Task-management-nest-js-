@@ -18,6 +18,7 @@ import {
   UpdateTeamDto,
 } from './team.dto';
 import { TeamMember } from './teamMember.entity';
+import { TeamRoleAssign } from 'src/teamRole/teamRole.assign.entity';
 
 @Injectable()
 export class TeamService implements TeamInterface {
@@ -31,6 +32,9 @@ export class TeamService implements TeamInterface {
     @InjectRepository(TeamRoles)
     private teamRoleRepository: Repository<TeamRoles>,
 
+    @InjectRepository(TeamRoleAssign)
+    private teamRoleAssignRepo: Repository<TeamRoleAssign>,
+
     @InjectRepository(TeamMember)
     private teamMemberRepository: Repository<TeamMember>,
   ) {}
@@ -40,7 +44,7 @@ export class TeamService implements TeamInterface {
       where: {
         id: teamId,
       },
-      relations: ['teamMembers.user'],
+      relations: ['teamMembers.user.teamRoleAssign.role'],
     });
     if (!teamExists) {
       throw new NotFoundException('Team not found.');
@@ -49,7 +53,7 @@ export class TeamService implements TeamInterface {
     return {
       success: true,
       message: 'successfully fetched the team member with role',
-      data: teamExists
+      data: teamExists,
     };
   }
 
@@ -189,9 +193,11 @@ export class TeamService implements TeamInterface {
   }
 
   async assignRole(assignRoleDto: AssignRoleDto): Promise<ResponseDto<any>> {
+    const { userId, roleId, teamId } = assignRoleDto;
+
     const isTeam = await this.teamRepository.findOne({
       where: {
-        id: assignRoleDto.teamId,
+        id: teamId,
       },
     });
 
@@ -201,8 +207,8 @@ export class TeamService implements TeamInterface {
 
     const isTeamMember = await this.teamMemberRepository.findOne({
       where: {
-        team: { id: assignRoleDto.teamId },
-        user: { userId: assignRoleDto.userId },
+        team: { id: teamId },
+        user: { userId: userId },
       },
     });
 
@@ -210,12 +216,35 @@ export class TeamService implements TeamInterface {
       throw new BadRequestException('User is not an member of the team.');
     }
 
-    const assignedRole = this.teamMemberRepository.create({
-      team: { id: assignRoleDto.teamId },
-      user: { userId: assignRoleDto.userId },
+    // const assignedRole = this.teamMemberRepository.create({
+    //   team: { id: teamId },
+    //   user: { userId: userId },
+    // });
+
+    // await this.teamMemberRepository.save(assignedRole);
+
+    const isDuplicate = await this.teamRoleAssignRepo.findOne({
+      where: { user: { userId: userId }, role: { id: roleId } },
     });
 
-    await this.teamMemberRepository.save(assignedRole);
+    if (isDuplicate) {
+      throw new BadRequestException(
+        'User is already assigned with the given role',
+      );
+    }
+
+    const assignedRole = this.teamRoleAssignRepo.create({
+      user: { userId: userId },
+      role: { id: roleId },
+    });
+
+    const savedData = await this.teamRoleAssignRepo.save(assignedRole);
+
+    if (!savedData) {
+      throw new BadRequestException(
+        'Failed to make role assignment to the user',
+      );
+    }
 
     return {
       success: true,
