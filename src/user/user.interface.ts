@@ -5,5 +5,6 @@ import { User } from './user.entity';
 export interface UserInterface {
   createUser(createUserDto: CreateUserDto): Promise<ResponseDto<User>>;
   login(loginDto: LoginDto): Promise<ResponseDto<any>>;
-  allUsers(): Promise<ResponseDto<any>>
+  allUsers(): Promise<ResponseDto<any>>;
+  singleUserInfo(userId: number): Promise<ResponseDto<any>>;
 }
