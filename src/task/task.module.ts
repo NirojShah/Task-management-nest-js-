@@ -4,9 +4,11 @@ import { TaskService } from './task.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Tasks } from './task.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { Team } from 'src/team/team.entity';
+import { User } from 'src/user/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Tasks]), JwtModule],
+  imports: [TypeOrmModule.forFeature([Tasks, Team, User]), JwtModule],
   controllers: [TaskController],
   providers: [TaskService],
 })
