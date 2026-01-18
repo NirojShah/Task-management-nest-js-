@@ -1,11 +1,14 @@
 import { ResponseDto } from 'src/response/response.dto';
 import { Tasks } from './task.entity';
-import { CreateTaskDto } from './task dto/task.dto';
+import { CreateTaskDto, UpdateTaskDto } from './task dto/task.dto';
 
 export interface TaskInterface {
-  createTasks(createTaskDto: CreateTaskDto,createdBy: number): Promise<ResponseDto<Tasks>>;
-  updateTasks(): Promise<ResponseDto<any>>;
-  deleteTask(taskId: number,userId: number): Promise<ResponseDto<any>>;
+  createTasks(
+    createTaskDto: CreateTaskDto,
+    createdBy: number,
+  ): Promise<ResponseDto<Tasks>>;
+  updateTasks(updateTaskDto: UpdateTaskDto): Promise<ResponseDto<any>>;
+  deleteTask(taskId: number, userId: number): Promise<ResponseDto<any>>;
   getTasks(
     page: number,
     limit: number,
@@ -15,6 +18,6 @@ export interface TaskInterface {
   updateTaskStatusById(
     taskId: number,
     status: string,
-    userId: number
+    userId: number,
   ): Promise<ResponseDto<any>>;
 }
