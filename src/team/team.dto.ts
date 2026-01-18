@@ -72,5 +72,5 @@ export class AssignRoleDto {
 
   @IsNumber()
   @IsNotEmpty()
-  teamId: number
+  teamId: number;
 }
