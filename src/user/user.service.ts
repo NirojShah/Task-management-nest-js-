@@ -77,6 +77,7 @@ export class UserService implements UserInterface {
     }
     const user = await this.userRepository.findOne({
       where: { email: loginDto.email },
+      select: ['userId', 'firstName', 'lastName', 'email', 'password'],
     });
     if (!user) {
       throw new BadRequestException('Invalid Credentials.');
