@@ -35,6 +35,12 @@ export class AssignRoleDTO {
   roleId: number;
 }
 
-export class UpdateRoleDTO{
-    
-} 
+export class UpdateRoleDTO {
+  @IsString({ message: 'Role Name must be a string.' })
+  @IsNotEmpty({ message: 'Role name is required.' })
+  newRoleName: string;
+
+  @IsNumber({}, { message: 'RoleId must be a number' })
+  @IsNotEmpty({ message: 'RoleId is required' })
+  roleId: number;
+}
