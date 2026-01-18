@@ -1,5 +1,5 @@
 import { ResponseDto } from 'src/response/response.dto';
-import { CreateTaskDto } from './task dto/task.dto';
+import { CreateTaskDto, UpdateTaskDto } from './task dto/task.dto';
 import { Tasks } from './task.entity';
 import { TaskInterface } from './task.interface';
 import {
@@ -10,12 +10,18 @@ import {
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TaskStatus } from './enums/taskStatus.enum';
+import { Team } from 'src/team/team.entity';
+import { User } from 'src/user/user.entity';
 
 @Injectable()
 export class TaskService implements TaskInterface {
   constructor(
     @InjectRepository(Tasks)
     private taskRepository: Repository<Tasks>,
+    @InjectRepository(Team)
+    private teamRepository: Repository<Team>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
   async createTasks(
     createTaskDto: CreateTaskDto,
@@ -41,8 +47,83 @@ export class TaskService implements TaskInterface {
     }
   }
 
-  updateTasks(): Promise<ResponseDto<any>> {
-    throw new Error('implementation pending.');
+  async updateTasks(updateTaskDto: UpdateTaskDto): Promise<ResponseDto<any>> {
+    const {
+      taskId,
+      taskName,
+      taskDescription,
+      startDate,
+      endDate,
+      hours,
+      status,
+      userId,
+      assignedBy,
+      teamId,
+    } = updateTaskDto;
+
+    const task = await this.taskRepository.findOne({
+      where: { taskId },
+      relations: ['user', 'assignedBy', 'createdBy', 'team'],
+    });
+
+    if (!task) {
+      throw new NotFoundException('Task not found');
+    }
+
+    // Basic fields
+    if (taskName !== undefined) task.taskName = taskName;
+    if (taskDescription !== undefined) task.taskDescription = taskDescription;
+    if (startDate !== undefined) task.startDate = startDate;
+    if (endDate !== undefined) task.endDate = endDate;
+    if (hours !== undefined) task.hours = hours;
+    if (status !== undefined) task.status = status;
+
+    // Reassign task to another user
+    if (userId !== undefined) {
+      const user = await this.userRepository.findOne({
+        where: { userId: userId },
+      });
+
+      if (!user) {
+        throw new NotFoundException('Assigned user not found');
+      }
+
+      task.user = user;
+    }
+
+    // Change assigned by
+    if (assignedBy !== undefined) {
+      const assigner = await this.userRepository.findOne({
+        where: { userId: assignedBy },
+      });
+
+      if (!assigner) {
+        throw new NotFoundException('AssignedBy user not found');
+      }
+
+      task.assignedBy = assigner;
+    }
+
+    // Change team
+    if (teamId !== undefined) {
+      const team = await this.teamRepository.findOne({
+        where: { id: teamId },
+      });
+
+      if (!team) {
+        throw new NotFoundException('Team not found');
+      }
+
+      task.team = team;
+    }
+
+    const updatedTask = await this.taskRepository.save(task);
+
+    return {
+      success: true,
+      message: 'Task updated successfully',
+      data: updatedTask,
+    };
   }
 
   async deleteTask(taskId: number, userId: number): Promise<ResponseDto<any>> {
