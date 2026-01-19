@@ -7,7 +7,6 @@ import {
 } from 'typeorm';
 import { Team } from './team.entity';
 import { User } from 'src/user/user.entity';
-import { create } from 'domain';
 
 @Entity('team_members')
 export class TeamMember {

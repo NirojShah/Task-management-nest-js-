@@ -24,6 +24,10 @@ export class CreateTeamDto {
 }
 
 export class UpdateTeamDto {
+  @IsNumber()
+  @IsNotEmpty()
+  teamId: number;
+
   @IsString()
   @IsOptional()
   @Length(2, 100)
@@ -39,12 +43,34 @@ export class UpdateTeamDto {
   isActive?: boolean;
 }
 
-
-
 export class AddTeamMemberDto {
   @IsNumber()
   teamId: number;
 
   @IsNumber()
   userId: number;
+}
+
+export class RemoveMemberDto {
+  @IsNumber()
+  @IsNotEmpty()
+  teamId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  userId: number;
+}
+
+export class AssignRoleDto {
+  @IsNumber()
+  @IsNotEmpty()
+  userId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  roleId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  teamId: number;
 }

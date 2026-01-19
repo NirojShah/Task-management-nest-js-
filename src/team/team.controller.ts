@@ -1,34 +1,74 @@
-import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { TeamService } from './team.service';
 import { ResponseDto } from 'src/response/response.dto';
-import { AddTeamMemberDto } from './team.dto';
+import {
+  AddTeamMemberDto,
+  AssignRoleDto,
+  CreateTeamDto,
+  RemoveMemberDto,
+  UpdateTeamDto,
+} from './team.dto';
 
 @Controller('team')
 export class TeamController {
   constructor(private readonly teamService: TeamService) {}
 
-  @Get()
-  getTeams(): Promise<ResponseDto<any>> {
-    throw new Error('Implement this');
-  }
   @Post()
-  createTeam(): Promise<ResponseDto<any>> {
-    throw new Error('Implement this');
+  createTeam(@Body() createTeamDto: CreateTeamDto): Promise<ResponseDto<any>> {
+    return this.teamService.createTeam(createTeamDto);
   }
+
+  @Get('/search')
+  searchTeam(@Query('name') name?: string): Promise<ResponseDto<any>> {
+    return this.teamService.searchTeam(name);
+  }
+
+  @Get('/get-details/:id')
+  getTeamDetails(
+    @Query('role') role: boolean,
+    @Query('members') members: boolean,
+    @Query('task') task: boolean,
+    @Param('id') id: number,
+  ): Promise<ResponseDto<any>> {
+    return this.teamService.getTeamDetails(id, role, members, task);
+  }
+
   @Patch()
-  updateTeam(): Promise<ResponseDto<any>> {
-    throw new Error('Implement this');
+  updateTeam(@Body() updateTeamDto: UpdateTeamDto): Promise<ResponseDto<any>> {
+    return this.teamService.updateTeam(updateTeamDto);
   }
-  @Post('/add-memeber')
+
+  @Post('/add-member')
   addUser(@Body() addUserDto: AddTeamMemberDto): Promise<ResponseDto<any>> {
-    return this.addUser(addUserDto);
+    return this.teamService.addMember(addUserDto);
   }
+
   @Patch('/remove-member')
-  removeUser(): Promise<ResponseDto<any>> {
-    throw new Error('Implement this');
+  removeUser(
+    @Body() removeMemberDto: RemoveMemberDto,
+  ): Promise<ResponseDto<any>> {
+    return this.teamService.removeMember(removeMemberDto);
   }
+
   @Post('/assign-team-role')
-  assignTeamRole(): Promise<ResponseDto<any>> {
-    throw new Error('Implement this');
+  assignTeamRole(
+    @Body() assignTeamRoleDto: AssignRoleDto,
+  ): Promise<ResponseDto<any>> {
+    return this.teamService.assignRole(assignTeamRoleDto);
+  }
+
+  @Get('member-with-role/:teamId')
+  getTeamMemberWithRole(
+    @Param('teamId') teamId: number,
+  ): Promise<ResponseDto<any>> {
+    return this.teamService.teamMemberWithRoles(teamId);
   }
 }

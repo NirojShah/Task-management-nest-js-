@@ -4,6 +4,9 @@ import {
   IsDateString,
   IsOptional,
   IsEnum,
+  IsString,
+  IsInt,
+  Min,
 } from 'class-validator';
 import { TaskStatus } from '../enums/taskStatus.enum';
 
@@ -34,4 +37,48 @@ export class CreateTaskDto {
 export class UpdateTaskStatusDto {
   @IsEnum(TaskStatus)
   status: TaskStatus;
+}
+export class UpdateTaskDto {
+  @IsNumber()
+  taskId: number;
+
+  @IsOptional()
+  @IsString()
+  taskName?: string;
+
+  @IsOptional()
+  @IsString()
+  taskDescription?: string;
+
+  // Reassign task to another user
+  @IsOptional()
+  @IsInt()
+  userId?: number;
+
+  // Change who assigned the task
+  @IsOptional()
+  @IsInt()
+  assignedBy?: number;
+
+  @IsOptional()
+  @IsDateString()
+  startDate?: Date;
+
+  @IsOptional()
+  @IsDateString()
+  endDate?: Date;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  hours?: number;
+
+  @IsOptional()
+  @IsEnum(TaskStatus)
+  status?: TaskStatus;
+
+  // Move task to another team
+  @IsOptional()
+  @IsInt()
+  teamId?: number;
 }

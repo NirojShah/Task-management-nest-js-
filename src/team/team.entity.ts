@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { TeamMember } from './teamMember.entity';
 import { Tasks } from 'src/task/task.entity';
+import { TeamRoles } from 'src/teamRole/teamRole.entity';
 
 @Entity('teams')
 export class Team {
@@ -34,4 +35,7 @@ export class Team {
 
   @OneToMany(() => Tasks, (task: Tasks) => task.team)
   tasks: Tasks[];
+
+  @OneToMany(() => TeamRoles, (teamRole) => teamRole.team)
+  teamRoles: TeamRoles[];
 }
