@@ -11,6 +11,8 @@ import { AssignTeamRoleDto, CreateTeamRoleDto } from './team-role.dto';
 import { TeamRoles } from './teamRole.entity';
 import { Team } from '../team/team.entity';
 import { User } from 'src/user/user.entity';
+import { error } from 'console';
+import { TeamRoleAssign } from './teamRole.assign.entity';
 
 @Injectable()
 export class TeamRoleService implements TeamRoleInterface {
@@ -21,6 +23,8 @@ export class TeamRoleService implements TeamRoleInterface {
     private teamRepository: Repository<Team>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(TeamRoleAssign)
+    private teamRoleAssignRepository: Repository<TeamRoleAssign>,
   ) {}
 
   async createTeamRole(
@@ -94,17 +98,66 @@ export class TeamRoleService implements TeamRoleInterface {
   ): Promise<ResponseDto<any>> {
     const { teamRoleId, userId } = assignTeamRoleDto;
 
-    const getRoleData = await this.teamRoleRepository.findOne({
+    const role = await this.teamRoleRepository.findOne({
       where: { id: teamRoleId },
     });
+    if (!role) {
+      throw new NotFoundException(
+        `No role is there with role id:${teamRoleId}`,
+      );
+    }
 
     const getUserData = await this.userRepository.findOne({
       where: { userId: userId },
     });
+    if (!getUserData) {
+      throw new NotFoundException(`No user with role id:${teamRoleId}`);
+    }
 
-    console.log(getRoleData);
-    console.log(getUserData);
+    const roleAssign = this.teamRoleAssignRepository.create({
+      user: { userId: userId },
+      role: { id: teamRoleId },
+    });
 
-    throw new Error('Implement this method');
+    if (!roleAssign) {
+      throw new BadRequestException('Error in assigning the role to user');
+    }
+    return {
+      success: true,
+      message: 'User assigned with a team role successfully',
+    };
+  }
+
+  async removeTeamRoleFromUser(
+    assignTeamRoleDto: AssignTeamRoleDto,
+  ): Promise<ResponseDto<any>> {
+    const { teamRoleId, userId } = assignTeamRoleDto;
+
+    const role = await this.teamRoleRepository.findOneBy({
+      id: teamRoleId,
+    });
+
+    if (!role) {
+      throw new NotFoundException(
+        `No role is there with role id:${teamRoleId}`,
+      );
+    }
+
+    const roleAssignment = await this.teamRoleAssignRepository.findOne({
+      where: { user: { userId: userId }, role: { id: teamRoleId } },
+    });
+
+    if (!roleAssignment) {
+      throw new BadRequestException(
+        'User is not assigned with the specified role',
+      );
+    }
+
+    const res = await this.teamRoleAssignRepository.delete(roleAssignment);
+
+    return {
+      success: true,
+      message: 'User team role removed successfully',
+    };
   }
 }
