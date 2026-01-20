@@ -11,6 +11,7 @@ import { AssignTeamRoleDto, CreateTeamRoleDto } from './team-role.dto';
 import { TeamRoles } from './teamRole.entity';
 import { Team } from '../team/team.entity';
 import { User } from 'src/user/user.entity';
+import { TeamRoleAssign } from './teamRole.assign.entity';
 
 @Injectable()
 export class TeamRoleService implements TeamRoleInterface {
@@ -21,6 +22,8 @@ export class TeamRoleService implements TeamRoleInterface {
     private teamRepository: Repository<Team>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(TeamRoleAssign)
+    private teamRoleAssignRepository: Repository<TeamRoleAssign>,
   ) {}
 
   async createTeamRole(
@@ -98,13 +101,28 @@ export class TeamRoleService implements TeamRoleInterface {
       where: { id: teamRoleId },
     });
 
+    if (!getRoleData) {
+      throw new NotFoundException(`Role with id - ${teamRoleId} not found.`);
+    }
+
     const getUserData = await this.userRepository.findOne({
       where: { userId: userId },
     });
 
-    console.log(getRoleData);
-    console.log(getUserData);
+    if (!getUserData) {
+      throw new NotFoundException(`User with id - ${userId} not found.`);
+    }
 
-    throw new Error('Implement this method');
+    const newRoleAssignment = this.teamRoleAssignRepository.create({
+      role: { id: teamRoleId },
+      user: { userId: userId },
+    });
+
+    await this.teamRoleAssignRepository.save(newRoleAssignment);
+
+    return {
+      success: true,
+      message: 'Role assigned successfully.',
+    };
   }
 }
