@@ -11,6 +11,7 @@ import { AssignTeamRoleDto, CreateTeamRoleDto } from './team-role.dto';
 import { TeamRoles } from './teamRole.entity';
 import { Team } from '../team/team.entity';
 import { User } from 'src/user/user.entity';
+import { error } from 'console';
 import { TeamRoleAssign } from './teamRole.assign.entity';
 
 @Injectable()
@@ -97,9 +98,14 @@ export class TeamRoleService implements TeamRoleInterface {
   ): Promise<ResponseDto<any>> {
     const { teamRoleId, userId } = assignTeamRoleDto;
 
-    const getRoleData = await this.teamRoleRepository.findOne({
+    const role = await this.teamRoleRepository.findOne({
       where: { id: teamRoleId },
     });
+    if (!role) {
+      throw new NotFoundException(
+        `No role is there with role id:${teamRoleId}`,
+      );
+    }
 
     if (!getRoleData) {
       throw new NotFoundException(`Role with id - ${teamRoleId} not found.`);
@@ -108,6 +114,9 @@ export class TeamRoleService implements TeamRoleInterface {
     const getUserData = await this.userRepository.findOne({
       where: { userId: userId },
     });
+    if (!getUserData) {
+      throw new NotFoundException(`No user with role id:${teamRoleId}`);
+    }
 
     if (!getUserData) {
       throw new NotFoundException(`User with id - ${userId} not found.`);

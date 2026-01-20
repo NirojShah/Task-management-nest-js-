@@ -11,4 +11,8 @@ export interface TeamRoleInterface {
   asignTeamRoleToUser(
     assignTeamRoleDto: AssignTeamRoleDto,
   ): Promise<ResponseDto<any>>;
+
+  removeTeamRoleFromUser(
+    assignTeamRoleDto: AssignTeamRoleDto,
+  ): Promise<ResponseDto<any>>;
 }
