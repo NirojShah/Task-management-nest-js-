@@ -107,6 +107,10 @@ export class TeamRoleService implements TeamRoleInterface {
       );
     }
 
+    if (!getRoleData) {
+      throw new NotFoundException(`Role with id - ${teamRoleId} not found.`);
+    }
+
     const getUserData = await this.userRepository.findOne({
       where: { userId: userId },
     });
@@ -114,50 +118,20 @@ export class TeamRoleService implements TeamRoleInterface {
       throw new NotFoundException(`No user with role id:${teamRoleId}`);
     }
 
-    const roleAssign = this.teamRoleAssignRepository.create({
-      user: { userId: userId },
+    if (!getUserData) {
+      throw new NotFoundException(`User with id - ${userId} not found.`);
+    }
+
+    const newRoleAssignment = this.teamRoleAssignRepository.create({
       role: { id: teamRoleId },
+      user: { userId: userId },
     });
 
-    if (!roleAssign) {
-      throw new BadRequestException('Error in assigning the role to user');
-    }
-    return {
-      success: true,
-      message: 'User assigned with a team role successfully',
-    };
-  }
-
-  async removeTeamRoleFromUser(
-    assignTeamRoleDto: AssignTeamRoleDto,
-  ): Promise<ResponseDto<any>> {
-    const { teamRoleId, userId } = assignTeamRoleDto;
-
-    const role = await this.teamRoleRepository.findOneBy({
-      id: teamRoleId,
-    });
-
-    if (!role) {
-      throw new NotFoundException(
-        `No role is there with role id:${teamRoleId}`,
-      );
-    }
-
-    const roleAssignment = await this.teamRoleAssignRepository.findOne({
-      where: { user: { userId: userId }, role: { id: teamRoleId } },
-    });
-
-    if (!roleAssignment) {
-      throw new BadRequestException(
-        'User is not assigned with the specified role',
-      );
-    }
-
-    const res = await this.teamRoleAssignRepository.delete(roleAssignment);
+    await this.teamRoleAssignRepository.save(newRoleAssignment);
 
     return {
       success: true,
-      message: 'User team role removed successfully',
+      message: 'Role assigned successfully.',
     };
   }
 }

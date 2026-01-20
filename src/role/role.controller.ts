@@ -9,7 +9,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { ResponseDto } from 'src/response/response.dto';
-import { AssignRoleDTO, CreateRole } from './role.dto';
+import { AssignRoleDTO, CreateRole, UpdateRoleDTO } from './role.dto';
 import { RolesService } from './role.service';
 
 @Controller('roles')
@@ -35,8 +35,10 @@ export class RoleController {
   }
 
   @Patch()
-  async updateRole(): Promise<ResponseDto<any>> {
-    throw new Error('implement this');
+  async updateRole(
+    @Body() updateRole: UpdateRoleDTO,
+  ): Promise<ResponseDto<any>> {
+    return this.rolesService.updateRole(updateRole);
   }
 
   @Get()
